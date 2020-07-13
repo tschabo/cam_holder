@@ -20,6 +20,30 @@ function nut(radius_, width_) {
     return union(u1, cr);
 }
 
+function slots(x, y, h, n) {
+    let o = square([x, (y / n) / 2]).extrude({ offset: [0, -(y / n) / 2, h] });
+    u = o;
+    for (i = 1; i < n; i++) {
+        u = union(u, translate([0, i * (y) / n, 0], o));
+    }
+    return translate([0, (y / n) / 2, 0], u);
+}
+
+function upperSlots(x, h, n, y) {
+    partsize = x / (2 * n - 1);
+    let a = cube({ size: [partsize, y, h] });
+    all = a;
+    for (i = 1; i < n; i++) {
+        all = union(
+            all, translate(
+                [i * partsize * 2, 0],
+                a
+            )
+        );
+    }
+    return all;
+}
+
 function holes(x_centered, y_centered, r_bolthole, height_) {
 
     let lower_left = cylinder({
@@ -40,8 +64,8 @@ function holes(x_centered, y_centered, r_bolthole, height_) {
         r: r_bolthole,
     });
     let middle_right = cylinder({
-        start: [x_centered - 1, (y_centered / 2) , 0],
-        end: [x_centered - 1, (y_centered / 2) , height_],
+        start: [x_centered - 1, (y_centered / 2), 0],
+        end: [x_centered - 1, (y_centered / 2), height_],
         r: r_bolthole,
     });
 
@@ -58,7 +82,25 @@ function base(height_) {
         [w_outer / 2 - (xdist_bolt_holes_centered + 2 * r_bolthole) / 2, 2.2, 0],
         holes(xdist_bolt_holes_centered, ydist_bolt_holes_centered, r_bolthole, 5)
     );
-    return difference(d, holes_);
+
+    d = difference(d, holes_);
+
+    let s = translate(
+        [w_outer / 2 - (xdist_bolt_holes_centered - 8) / 2, 2, 0],
+        slots(xdist_bolt_holes_centered - 8, r_inner * 2 - 0.5, height_ - height_subst, 4)
+    );
+    d = difference(d, s);
+    let sl = translate(
+        [r_outer - 4, 2, 0],
+        slots(xdist_bolt_holes_centered - 8, r_inner * 2 - 1.5, height_, 4)
+    );
+    d = difference(d, sl);
+    let sr = translate(
+        [w_outer - 2 * r_outer + 4, 2, 0],
+        slots(xdist_bolt_holes_centered - 8, r_inner * 2 - 1.5, height_, 4)
+    );
+    d = difference(d, sr);
+    return d;
 }
 
 function shell(height_) {
@@ -70,8 +112,7 @@ function shell(height_) {
 }
 
 function main() {
-    //return holes(20.7, 13, 2.5, 4);
-
+    //return upperSlots(10, 10, 4, 2);
     let base_height = 5
     b = base(base_height);
     return union(b, translate([0, 0, base_height], shell(15)));
