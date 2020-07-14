@@ -100,6 +100,7 @@ function base(height_) {
         slots(xdist_bolt_holes_centered - 8, r_inner * 2 - 1.5, height_, 4)
     );
     d = difference(d, sr);
+
     return d;
 }
 
@@ -108,7 +109,13 @@ function shell(height_) {
     let n_inner = translate([shell_width, shell_width], nut(r_inner, w_inner));
     v = linear_extrude({ height: height_ }, difference(n_outer, n_inner));
     let c = translate([w_outer / 2 - width_subst / 2, 0, 0], cube({ size: [width_subst, shell_width, height_] }));
-    return difference(v, c);
+    d = difference(v, c);
+    let sl = translate(
+        [r_outer/2, 2 * r_outer - 10, 2],
+        upperSlots(w_outer - r_outer, height_ - 4, 12, 20)
+    )
+    d = difference(d, sl);
+    return d;
 }
 
 function main() {
