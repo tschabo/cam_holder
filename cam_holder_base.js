@@ -72,6 +72,21 @@ function holes(x_centered, y_centered, r_bolthole, height_) {
     return translate([r_bolthole, r_bolthole, 0], union(u, union(middle_left, middle_right)));
 }
 
+function holder(){
+    let c=cube({size:[4,4,4]})
+    
+    u = union(c,cylinder({
+        start:[0,4,2],
+        end:[4,4,2],
+        r:2
+    }));
+    return difference(u,cylinder({
+        start:[0,4,2],
+        end:[4,4,2],
+        r:1
+    }));
+}
+
 function base(height_) {
     b = linear_extrude({ height: height_ }, nut(r_outer, w_outer));
     let height_subst = 1.5;
@@ -101,6 +116,11 @@ function base(height_) {
     );
     d = difference(d, sr);
 
+    let hh = translate(
+        [w_outer/2-2, 2*r_inner+2,0],
+        holder()
+    );
+    d = union(d,hh);
     return d;
 }
 
@@ -119,8 +139,8 @@ function shell(height_) {
 }
 
 function main() {
-    //return upperSlots(10, 10, 4, 2);
-    let base_height = 5
+    //return holder();
+    let base_height = 5;
     b = base(base_height);
     return union(b, translate([0, 0, base_height], shell(15)));
 }
