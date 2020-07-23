@@ -4,7 +4,7 @@ let h = 23;
 
 function horns() {
     let distance = 17.2
-    let c = cube({size:[2,3,1]});
+    let c = cube({size:[2,2,1]});
     let both = union(
         c,
         translate(
@@ -21,7 +21,7 @@ function base() {
     return union(
         cube({size:[w,h,1]}),
         translate(
-            [-2,-4,0],
+            [-2,-3,0],
             cube({size:[w+4,4,1]})
         )
     )
@@ -36,7 +36,17 @@ function baseWithHorns() {
 
 function baseWithHornsAntHole() {
     let side=14.5;
-    let c = cube({size:[side,side,1]});
+    c = cube({size:[side,side,1]});
+    c = union(
+        c,
+        cylinder(
+            {
+                start:[side/2,side/2+4,0],
+                end:[side/2,side/2+4,1],
+                r:7
+            }
+        )
+    )
     wihtHole = difference(
         baseWithHorns(),
         translate(
@@ -71,14 +81,14 @@ function baseWithAll(){
     ret = union(
         baseWithHornsAntHole(),
         translate(
-            [-2,-4,0],
+            [-2,-3,0],
             teil
         )
     );
     return union(
         ret,
         translate(
-            [w+1, -4, 0],
+            [w+1, -3, 0],
             teil
         )
     );
