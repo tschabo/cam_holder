@@ -32,14 +32,31 @@ function slots(x, y, h, n) {
 function upperSlots(x, h, n, y) {
     partsize = x / (2 * n - 1);
     let a = cube({ size: [partsize, y, h] });
+    let b = difference(
+        a,
+        translate(
+            [0,0,2],
+            cube({size:[x,y,1]})
+        )
+    );
     all = a;
     for (i = 1; i < n; i++) {
-        all = union(
-            all, translate(
-                [i * partsize * 2, 0],
-                a
-            )
-        );
+        if(i == 4 || i == 7){
+            all = union(
+                all, translate(
+                    [i * partsize * 2, 0],
+                    b
+                )
+            );
+        } 
+        else {
+            all = union(
+                all, translate(
+                    [i * partsize * 2, 0],
+                    a
+                )
+            );
+            }
     }
     return all;
 }
@@ -94,7 +111,7 @@ function base(height_) {
     d = difference(b, q);
     let r_bolthole = 2.5;
     let holes_ = translate(
-        [w_outer / 2 - (xdist_bolt_holes_centered + 2 * r_bolthole) / 2, 2.2, 0],
+        [w_outer / 2 - (xdist_bolt_holes_centered + 2 * r_bolthole) / 2, 2.2, 0.4],
         holes(xdist_bolt_holes_centered, ydist_bolt_holes_centered, r_bolthole, 5)
     );
 
@@ -124,6 +141,7 @@ function base(height_) {
     return d;
 }
 
+
 function shell(height_) {
     let n_outer = nut(r_outer, w_outer);
     let n_inner = translate([shell_width, shell_width], nut(r_inner, w_inner));
@@ -137,6 +155,7 @@ function shell(height_) {
     d = difference(d, sl);
     return d;
 }
+
 
 function main() {
     //return holder();
