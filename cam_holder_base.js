@@ -90,16 +90,16 @@ function holes(x_centered, y_centered, r_bolthole, height_) {
 }
 
 function holder(){
-    let c=cube({size:[4,4,4]})
+    let c=cube({size:[5,10,5]})
     
     u = union(c,cylinder({
-        start:[0,4,2],
-        end:[4,4,2],
-        r:2
+        start:[0,10,2.5],
+        end:[5,10,2.5],
+        r:2.5
     }));
     return difference(u,cylinder({
-        start:[0,4,2],
-        end:[4,4,2],
+        start:[0,10,2.5],
+        end:[5,10,2.5],
         r:1
     }));
 }
